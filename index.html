@@ -1,0 +1,1091 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정다은 — Backend Engineer Portfolio</title>
+<style>
+  /* Pretendard Variable, loaded from jsdelivr CDN (pinned to v1.3.9) instead of an embedded base64 font. */
+  @font-face {
+    font-family: "Pretendard";
+    font-weight: 45 920;
+    font-style: normal;
+    font-display: swap;
+    src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/packages/pretendard/dist/web/variable/woff2/PretendardVariable.woff2") format("woff2-variations");
+}
+
+  :root {
+    --bg: #1a1b26;
+    --bg-elevated: #1f2335;
+    --bg-titlebar: #16161e;
+    --bg-inset: #13141c;
+    --border: #2b3049;
+    --border-soft: #232744;
+    --fg: #c0caf5;
+    --fg-bright: #e6e9fb;
+    --comment: #7b82b3;
+    --blue: #7aa2f7;
+    --green: #9ece6a;
+    --orange: #e0af68;
+    --red: #f7768e;
+    --cyan: #7dcfff;
+    --purple: #bb9af7;
+    --shadow: 0 20px 46px -20px rgba(0,0,0,0.7);
+    --font: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", "Noto Sans KR", sans-serif;
+    --mono: ui-monospace, "SF Mono", "D2Coding", "Cascadia Code", Consolas, "Roboto Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 900px 480px at 85% -10%, rgba(122,162,247,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 420px at 5% 8%, rgba(158,206,106,0.06), transparent 60%);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+  html { scroll-behavior: smooth; }
+  ::selection { background: rgba(122,162,247,0.35); }
+  button { font: inherit; }
+
+  @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  .cursor { display: inline-block; width: .5em; height: 1.05em; background: var(--green); vertical-align: text-bottom; animation: blink 1s steps(1) infinite; margin-left: 2px; }
+
+  h1, h2, h3, h4 { margin: 0; font-weight: 700; }
+  p { margin: 0; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .page { max-width: 1360px; margin: 0 auto; padding: 0 32px; }
+
+  /* ============ HERO ============ */
+  .hero { padding: 56px 0 30px; }
+  .eyebrow { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); font-weight: 700; margin: 0 0 20px; }
+  .hero-grid { display: flex; align-items: flex-start; justify-content: space-between; gap: 48px; }
+  .hero-col-name { flex: 1 1 480px; min-width: 0; }
+  .hero-col-meta { flex: 0 0 320px; text-align: right; }
+  .hero h1 { font-size: clamp(1.9rem, 3vw, 2.5rem); color: var(--fg-bright); letter-spacing: -0.01em; text-wrap: balance; }
+  .hero h1 .en { color: var(--comment); font-size: .5em; font-weight: 600; margin-left: 10px; }
+  .hero .role { color: var(--orange); font-size: .92rem; font-weight: 700; }
+  .hero .lede { max-width: 56ch; color: var(--fg-bright); opacity: .97; font-size: 1rem; margin-top: 18px; }
+  .hero-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; margin-top: 14px; font-size: .84rem; color: var(--comment); }
+  .hero-meta a { color: var(--fg); text-decoration: none; border-bottom: 1px solid var(--border); }
+  .hero-meta a:hover { color: var(--cyan); border-color: var(--cyan); }
+  .hero-note { max-width: 64ch; color: var(--comment); font-size: .88rem; margin-top: 22px; }
+
+  /* ============ TAB BAR ============ */
+  .tabbar-wrap { position: sticky; top: 0; z-index: 40; background: var(--bg); padding-top: 6px; }
+  .tabbar {
+    display: flex; flex-wrap: wrap; background: var(--bg-titlebar);
+    border: 1px solid var(--border); border-bottom: none; border-radius: 10px 10px 0 0;
+  }
+  .tab {
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0;
+    background: transparent; border: none; border-right: 1px solid var(--border-soft);
+    color: var(--comment); padding: 16px 20px; font-size: .85rem; font-weight: 600;
+    cursor: pointer; white-space: nowrap; position: relative; transition: background .18s, color .18s;
+  }
+  .tab-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .tab:hover { color: var(--fg); background: rgba(255,255,255,0.03); }
+  .tab.active { color: var(--fg-bright); background: var(--bg-elevated); }
+  .tab.active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--cyan); }
+  .tab.tab-add {
+    position: relative; z-index: 1; color: #0c1118; font-weight: 800; font-size: 1.05rem;
+    padding: 12px 22px; background: linear-gradient(135deg, var(--green), var(--cyan));
+    border-right: none;
+  }
+  .tab.tab-add:hover { color: #0c1118; filter: brightness(1.08); }
+  .tab.tab-add::before {
+    content: ""; position: absolute; inset: -4px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    opacity: .4; filter: blur(8px); z-index: -1;
+    animation: tabAddPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes tabAddPulse {
+    0%, 100% { opacity: .3; transform: scale(1); }
+    50% { opacity: .7; transform: scale(1.12); }
+  }
+
+  /* ============ STAGE (cascading windows) ============ */
+  .stage {
+    position: relative; background: var(--bg-inset); overflow: hidden;
+    border: 1px solid var(--border); border-radius: 0 0 10px 10px;
+    padding: 34px 20px 60px; min-height: 760px;
+  }
+
+  .pwin {
+    position: absolute; left: 50%; top: 30px; width: min(980px, 90vw);
+    background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 9px;
+    box-shadow: var(--shadow); overflow: hidden; max-height: 250px;
+    transform: translate(-50%, 0) translate(var(--dx), var(--dy)) rotate(var(--r)) scale(0.95);
+    filter: brightness(0.8) saturate(0.9);
+    transition: transform .48s cubic-bezier(.22,.8,.2,1), max-height .48s cubic-bezier(.22,.8,.2,1), filter .3s, box-shadow .3s;
+    cursor: pointer;
+  }
+  .pwin::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 64px;
+    background: linear-gradient(to bottom, transparent, var(--bg-elevated));
+    opacity: 1; transition: opacity .3s; pointer-events: none;
+  }
+  .pwin:nth-of-type(1) { --dx: 0px;   --dy: 6px;  --r: -1.4deg; z-index: 1; }
+  .pwin:nth-of-type(2) { --dx: 30px;  --dy: 20px; --r: 2.1deg;  z-index: 2; }
+  .pwin:nth-of-type(3) { --dx: -28px; --dy: 32px; --r: -2.7deg; z-index: 3; }
+  .pwin:nth-of-type(4) { --dx: 42px;  --dy: 40px; --r: 1.5deg;  z-index: 4; }
+  .pwin:nth-of-type(5) { --dx: -36px; --dy: 46px; --r: 3deg;    z-index: 5; }
+  .pwin:nth-of-type(6) { --dx: 18px;  --dy: 54px; --r: -3.4deg; z-index: 6; }
+  .pwin:nth-of-type(7) { --dx: -46px; --dy: 24px; --r: 1.1deg;  z-index: 7; }
+  .pwin:nth-of-type(8) { --dx: 28px;  --dy: 60px; --r: -1.8deg; z-index: 8; }
+  .pwin:nth-of-type(9) { --dx: -20px; --dy: 66px; --r: 2.5deg;  z-index: 9; }
+  .pwin:nth-of-type(10){ --dx: 46px;  --dy: 30px; --r: -2.2deg; z-index: 10; }
+  .pwin:nth-of-type(11){ --dx: -30px; --dy: 58px; --r: 2.8deg;  z-index: 11; }
+
+  /* Must come after the nth-of-type rules above: equal specificity, so source
+     order decides the tie, and .active needs to win regardless of position. */
+  .pwin.active {
+    position: relative; left: auto; top: auto; margin: 0 auto;
+    transform: none; max-height: 720px; overflow-y: auto; filter: none;
+    box-shadow: 0 30px 60px -22px rgba(0,0,0,0.8); z-index: 100; cursor: default;
+  }
+  .pwin.active::after { opacity: 0; }
+
+  /* ---------- window chrome (shared) ---------- */
+  .win-bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 14px; padding: 11px 16px; background: var(--bg-titlebar); border-bottom: 1px solid var(--border); }
+  .dots { display: flex; gap: 7px; flex-shrink: 0; }
+  .dots span { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+  .dots .r { background: var(--red); } .dots .y { background: var(--orange); } .dots .g { background: var(--green); }
+  .win-path { color: var(--comment); font-size: .78rem; flex-grow: 1; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); }
+  .win-body { padding: 24px 28px 28px; }
+
+  .prompt-line { color: var(--comment); font-size: .82rem; margin-bottom: 14px; font-family: var(--mono); }
+  .prompt-line .sym { color: var(--green); }
+
+  .h-tag { color: var(--purple); }
+  .doc-h1 { color: var(--fg-bright); font-size: 1.4rem; margin: 2px 0 6px; text-wrap: balance; }
+  .doc-sub { color: var(--comment); font-size: .9rem; max-width: max-content; margin-bottom: 14px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .badge { font-size: .74rem; font-weight: 600; border-radius: 4px; padding: 3px 9px; white-space: nowrap; border: 1px solid; }
+  .badge.active { color: var(--orange); border-color: var(--orange); background: rgba(224,175,104,0.08); }
+  .badge.done { color: var(--green); border-color: var(--green); background: rgba(158,206,106,0.08); }
+  .badge.study { color: var(--blue); border-color: var(--blue); background: rgba(122,162,247,0.08); }
+  .badge.plan { color: var(--purple); border-color: var(--purple); background: rgba(187,154,247,0.08); }
+  .tagline { color: var(--comment); font-size: .76rem; border: 1px solid var(--border-soft); border-radius: 4px; padding: 3px 9px; font-family: var(--mono); }
+
+  .sec { margin-top: 30px; }
+  .sec:first-of-type { margin-top: 24px; }
+  .sec-h { display: flex; align-items: baseline; gap: 9px; margin-bottom: 13px; color: var(--blue); font-size: .92rem; font-weight: 700; }
+  .sec-h .no { color: var(--comment); font-family: var(--mono); }
+
+  .lede { color: var(--fg-bright); font-weight: 700; font-size: 1rem; margin-bottom: 10px; max-width: max-content; }
+  .lede::before { content: "> "; color: var(--green); font-family: var(--mono); }
+  .prose { color: var(--fg); opacity: .96; max-width: max-content; margin-bottom: 10px; font-size: .92rem; }
+  .prose:last-child { margin-bottom: 0; }
+
+  .kv-block { display: flex; flex-direction: column; gap: 9px; }
+  .kv { font-size: .85rem; line-height: 1.65; }
+  .kv .k { color: var(--blue); font-weight: 600; }
+  .kv .colon { color: var(--comment); }
+  .kv .v { color: var(--green); }
+  .kv .cm { color: var(--comment); }
+
+  .ascii { font-family: var(--mono); background: var(--bg-inset); border: 1px solid var(--border-soft); border-radius: 6px; padding: 16px 18px; overflow-x: auto; font-size: .82rem; color: var(--fg); white-space: pre; }
+  .ascii .ent { color: var(--cyan); }
+  .ascii .rel { color: var(--orange); }
+  .ascii .cm { color: var(--comment); }
+
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+  .task { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: .87rem; }
+  .task .ok { color: var(--green); }
+  .task .name { color: var(--fg-bright); font-weight: 700; flex-shrink: 0; }
+  .task .leader { flex: 1 1 40px; min-width: 16px; border-bottom: 1px dotted var(--border); align-self: center; margin-top: -6px; }
+  .task .desc { color: var(--comment); }
+
+  .diff { border: 1px solid var(--border-soft); border-radius: 6px; overflow: hidden; margin-bottom: 16px; background: var(--bg-inset); }
+  .diff:last-child { margin-bottom: 0; }
+  .diff-cmd { padding: 10px 16px; border-bottom: 1px solid var(--border-soft); color: var(--comment); font-size: .78rem; font-family: var(--mono); }
+  .diff-cmd .sym { color: var(--green); }
+  .diff-cmd .case { color: var(--cyan); }
+  .diff-body { padding: 4px 0 12px; }
+  .diff-row { padding: 5px 16px; font-size: .84rem; display: flex; gap: 8px; }
+  .diff-row .tag { flex-shrink: 0; width: 62px; font-weight: 700; font-family: var(--mono); font-size: .76rem; padding-top: 1px; }
+  .diff-row.del { background: rgba(247,118,142,0.07); color: #f2a5b3; }
+  .diff-row.del .tag { color: var(--red); }
+  .diff-row.add { background: rgba(158,206,106,0.07); color: #c3dba0; }
+  .diff-row.add .tag { color: var(--green); }
+  .diff-row.cause { color: var(--comment); }
+  .diff-row.cause .tag { color: var(--purple); }
+  .diff-note { margin: 10px 16px 4px; padding: 7px 11px; border: 1px dashed var(--orange); border-radius: 5px; color: var(--orange); font-size: .74rem; background: rgba(224,175,104,0.06); }
+
+  .quote-line { border-left: 2px solid var(--cyan); padding: 2px 0 2px 16px; color: var(--fg-bright); font-size: .98rem; line-height: 1.6; }
+  .quote-line::before { content: "// "; color: var(--comment); font-family: var(--mono); }
+
+  .mini-stack { color: var(--comment); font-size: .78rem; margin-top: 4px; }
+  .mini-stack .k { color: var(--blue); }
+  .mini-link { color: var(--cyan); font-size: .82rem; text-decoration: none; margin-top: 8px; display: inline-block; }
+  .mini-link:hover { text-decoration: underline; }
+
+  /* ---------- window chrome reused by modals ---------- */
+  .win-body.tight { padding: 20px 22px; }
+
+  .log-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; font-size: .85rem; padding: 5px 0; border-bottom: 1px solid var(--border-soft); }
+  .log-line:last-child { border-bottom: none; }
+  .log-line .yr { color: var(--comment); width: 56px; flex-shrink: 0; font-family: var(--mono); }
+  .log-line .ev { color: var(--fg); flex: 2 1 260px; }
+  .log-line .leader { flex: 1 1 20px; min-width: 10px; border-bottom: 1px dotted var(--border); align-self: center; margin-top: -6px; }
+  .log-line .rs { color: var(--orange); font-weight: 700; }
+
+  .code-line { font-size: .87rem; padding: 2px 0; font-family: var(--mono); }
+  .code-line .kw { color: var(--purple); }
+  .code-line .var { color: var(--blue); }
+  .code-line .str { color: var(--green); }
+  .code-line .cm { color: var(--comment); }
+  .run-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 22px; }
+  .run-btn { font-size: .84rem; font-weight: 600; padding: 10px 16px; border-radius: 6px; text-decoration: none; border: 1px solid var(--border); color: var(--fg); display: inline-flex; align-items: center; gap: 8px; }
+  .run-btn .sym { color: var(--green); font-family: var(--mono); }
+  .run-btn.primary { background: var(--green); color: #10261c; border-color: var(--green); }
+  .run-btn.primary .sym { color: #10261c; }
+  .run-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .run-btn.primary:hover { opacity: .92; color: #10261c; }
+
+  .foot-note { margin-top: 40px; color: var(--comment); font-size: .76rem; max-width: 66ch; }
+  .foot-note .tag-sample { border: 1px dashed var(--orange); color: var(--orange); padding: 1px 6px; border-radius: 4px; font-size: .74rem; }
+
+  /* ============ CLOSING ============ */
+  .closing {
+    margin-top: 56px; padding: 60px 40px 50px; text-align: center;
+    border-top: 1px solid var(--border-soft);
+    background: radial-gradient(ellipse 760px 320px at 50% 0%, rgba(122,162,247,0.08), transparent 65%);
+  }
+  .closing-eyebrow { font-size: .74rem; letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); font-weight: 700; margin: 0 0 14px; }
+  .closing-title { font-size: clamp(1.5rem, 3vw, 2rem); color: var(--fg-bright); margin-bottom: 18px; }
+  .closing-lede { color: var(--fg-bright); font-weight: 700; font-size: 1.05rem; max-width: max-content; margin: 0 auto 14px; }
+  .closing-prose { color: var(--fg); opacity: .85; font-size: .94rem; max-width: max-content; margin: 0 auto 8px; }
+  .closing-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 28px 0 22px; }
+  .closing .foot-note { max-width: 60ch; margin-left: auto; margin-right: auto; }
+
+  /* ============ HERO SHORTCUT LINKS ============ */
+  .hero-links { display: flex; gap: 10px; justify-content: flex-start; flex-wrap: wrap; margin-top: 18px; }
+  .hero-link-btn {
+    background: rgba(125,207,255,0.1); border: 1px solid var(--cyan); color: var(--cyan);
+    font-family: var(--mono); font-weight: 700; font-size: .86rem; padding: 10px 16px; border-radius: 7px;
+    cursor: pointer; transition: background .18s, transform .18s, box-shadow .18s;
+  }
+  .hero-link-btn .sym { color: inherit; opacity: .8; }
+  .hero-link-btn:hover { background: rgba(125,207,255,0.2); transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(125,207,255,0.55); }
+  .hero-link-btn.awards { border-color: var(--orange); color: var(--orange); background: rgba(224,175,104,0.1); }
+  .hero-link-btn.awards:hover { background: rgba(224,175,104,0.2); box-shadow: 0 8px 18px -8px rgba(224,175,104,0.55); }
+
+  /* ============ MODAL (skills / awards) ============ */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(10,11,20,0.72); backdrop-filter: blur(2px);
+    align-items: flex-start; justify-content: center; padding: 5vh 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-win {
+    width: min(920px, 96vw); max-height: 90vh; overflow-y: auto;
+    background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.85);
+  }
+  .modal-subhead { display: flex; align-items: baseline; gap: 9px; margin: 22px 0 10px; color: var(--blue); font-size: .88rem; font-weight: 700; }
+  .modal-divider { border: none; border-top: 1px solid var(--border-soft); margin: 22px 0 0; }
+  .modal-close {
+    background: transparent; border: none; color: var(--comment);
+    cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 2px 6px; flex-shrink: 0;
+  }
+  .modal-close:hover { color: var(--red); }
+</style>
+
+<div class="page">
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <p class="eyebrow">Backend Engineer Portfolio</p>
+    <div class="hero-grid">
+      <div class="hero-col-name">
+        <h1>정다은<span class="en">Jung Da Eun / 부산대학교 IT응용공학과 23학번</span></h1>
+        <p class="lede">Java / Spring Boot 기반 백엔드 개발을 중심으로, 데이터가 저장되고 API로 흐르고 사용자가 실제로 쓰는 기능 안에서 문제없이 동작하도록 구조를 잡는 일을 반복해왔습니다.<span class="cursor" aria-hidden="true"></span></p>
+        <div class="hero-links">
+          <button class="hero-link-btn" data-modal="skills-modal"><span class="sym">$</span> cat skills.json</button>
+          <button class="hero-link-btn awards" data-modal="awards-modal"><span class="sym">$</span> cat awards.log</button>
+        </div>
+      </div>
+      <div class="hero-col-meta">
+        <p class="role">지원 직무 · 백엔드 엔지니어(제품팀)<br>(주)센디</p>
+        <div class="hero-meta">
+          <a href="mailto:ekdms8652@pusan.ac.kr">ekdms8652@pusan.ac.kr</a>
+          <a href="https://github.com/Dongle-2026/Dongle-BE.git" target="_blank" rel="noopener">github.com/Dongle-2026/Dongle-BE</a>
+          <a href="https://github.com/ekdmssld/brainsensemvp.git" target="_blank" rel="noopener">github.com/ekdmssld/brainsensemvp</a>
+        </div>
+      </div>
+    </div>
+    <p class="hero-note">아래 탭을 누르시면 프로젝트를 자세히 볼 수 있습니다.</p>
+  </header>
+
+  <!-- ============ TAB BAR + STAGE ============ -->
+  <div class="tabbar-wrap">
+    <nav class="tabbar" id="tabbar">
+      <button class="tab active" data-target="wigul"><span class="tab-dot" style="background:var(--orange)"></span>Wigul</button>
+      <button class="tab" data-target="youthletter"><span class="tab-dot" style="background:var(--green)"></span>유스레터</button>
+      <button class="tab" data-target="robot"><span class="tab-dot" style="background:var(--green)"></span>로봇 시스템</button>
+      <button class="tab" data-target="gamba"><span class="tab-dot" style="background:var(--orange)"></span>MQTT·SLM</button>
+      <button class="tab" data-target="foodtech"><span class="tab-dot" style="background:var(--green)"></span>식품테크</button>
+      <button class="tab" data-target="iotlab"><span class="tab-dot" style="background:var(--blue)"></span>IoT 실험실</button>
+      <button class="tab" data-target="labit"><span class="tab-dot" style="background:var(--blue)"></span>LABIT</button>
+      <button class="tab" data-target="miryangbus"><span class="tab-dot" style="background:var(--green)"></span>밀양 버스</button>
+      <button class="tab" data-target="busaccess"><span class="tab-dot" style="background:var(--blue)"></span>버스 접근성</button>
+      <button class="tab" data-target="dandi"><span class="tab-dot" style="background:var(--purple)"></span>단디</button>
+      <button class="tab tab-add" data-target="sendy" aria-label="센디 지원 — 할 수 있는 일 보기">Sendy</button>
+    </nav>
+  </div>
+
+  <section class="stage" id="stage">
+
+      <!-- 01 WIGUL -->
+      <article class="pwin active" data-target="wigul">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/01-wigul.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> ssh backend@wigul — <span style="color:var(--cyan)">2026.1학기 · 개발동아리 404_Wigul · 백엔드 담당</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> Wigul — 소비 숙려 기반 Android 서비스 백엔드</h2>
+          <p class="doc-sub">구매를 결정하기 전, 소비를 한 번 더 점검하도록 돕는 서비스.</p>
+          <div class="badges">
+            <span class="badge active">● 비공개 Android 테스트 진행 중</span>
+            <span class="tagline">Java 21</span><span class="tagline">Spring Boot 3.5.11</span><span class="tagline">PostgreSQL</span>
+            <span class="tagline">Flyway</span><span class="tagline">OAuth2 / JWT</span><span class="tagline">Testcontainers</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요 및 기획 의도</div>
+            <p class="lede">"충동구매를 어떻게 데이터 구조로 막을 것인가"를 서버 설계의 첫 질문으로 삼았습니다.</p>
+            <p class="prose">Wigul은 사용자가 사고 싶은 상품의 링크를 저장해두고, 즉시 구매 대신 일정 기간의 숙려를 거쳐 최종 구매 여부(GO / STOP)를 결정하도록 돕는 <br>Android 서비스입니다.</p>
+            <p class="prose">기획팀이 정의한 정책 (같은 상품을 다시 저장했을 때의 처리, 구매 결정을 번복했을 때 남겨야 할 이력, 알림을 사용자 단위로 볼지 기기 단위로 볼지)을 <br>실제 제약조건과 API 흐름으로 옮기는 것이 핵심 과제였습니다.</p>
+            <p class="prose">서버 구조·도메인 스키마 설계부터 인증, 위시리스트·구매결정·예산·소셜피드·알림·약관동의까지 8개 핵심 도메인의 API, 테스트 환경 구성까지 담당했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술 스택 및 선택 이유</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">runtime</span><span class="colon">:</span> <span class="v">Java 21, Spring Boot 3.5.11</span> <span class="cm"> # LTS 채택 — 최신 문법 반영 + 장기 유지보수 안정성</span></div>
+              <div class="kv"><span class="k">database</span><span class="colon">:</span> <span class="v">PostgreSQL + JPA</span> <span class="cm"> # 구매결정 이력·약관 동의 등 정합성이 중요해 강한 제약조건 + 트랜잭션 신뢰 가능한 RDB 선택</span></div>
+              <div class="kv"><span class="k">migration</span><span class="colon">:</span> <span class="v">Flyway</span> <span class="cm"> # 스프린트마다 바뀌는 스키마를 버전 히스토리로 남겨 팀 간 drift 방지</span></div>
+              <div class="kv"><span class="k">auth</span><span class="colon">:</span> <span class="v">Spring Security, OAuth2, JWT</span> <span class="cm"> # 모바일 클라이언트 특성상 세션 대신 stateless 토큰 + refresh 재발급 구조</span></div>
+              <div class="kv"><span class="k">test</span><span class="colon">:</span> <span class="v">JUnit, Testcontainers, JaCoCo</span> <span class="cm"> # H2 대신 실제 PostgreSQL 컨테이너로 제약조건·시퀀스까지 검증</span></div>
+              <div class="kv"><span class="k">crawling</span><span class="colon">:</span> <span class="v">Jsoup</span> <span class="cm"> # 쇼핑 링크에서 상품명·썸네일을 서버가 직접 파싱해 프론트 부담 제거</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 시스템 아키텍처 · 개념 ERD</div>
+            <p class="prose" style="margin-bottom:14px;">사용자를 중심으로 위시리스트 → 구매결정이 이력을 남기는 1:N 구조로 이어지고, <br>알림은 사용자가 아닌 <b style="color:var(--fg-bright)">기기(Device)</b> 단위로 분리해 다중 기기 사용을 고려했습니다.</p>
+            <pre class="ascii"><span class="ent">User</span>
+├─ <span class="ent">Wishlist</span> ───<span class="rel">1:N</span>──▶ <span class="ent">PurchaseDecision</span>   <span class="cm"># GO/STOP 이력, append-only</span>
+├─ <span class="ent">Budget</span>                                 <span class="cm"># 월 예산 · 소비 통계</span>
+├─ <span class="ent">DeviceToken</span> ─<span class="rel">1:N</span>──▶ <span class="ent">Notification</span>       <span class="cm"># 리마인더 · 알림 설정</span>
+└─ <span class="ent">Post</span> ───────<span class="rel">1:N</span>──▶ <span class="ent">Comment / Vote / Report</span></pre>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 본인이 담당한 핵심 기능</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">인증/인가</span><span class="leader"></span><span class="desc">Google·Kakao OAuth2, JWT 발급, refresh token 재발급</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">위시리스트</span><span class="leader"></span><span class="desc">상품 저장, 중복 URL 처리, 카테고리, 페이지 조회</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">구매 결정</span><span class="leader"></span><span class="desc">GO/STOP 결과 저장 및 변경 이력 관리</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">예산/마이페이지</span><span class="leader"></span><span class="desc">월 예산, 소비 내역 통계, 프로필 조회·수정</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">소셜 피드</span><span class="leader"></span><span class="desc">게시글, 댓글, 투표, 신고, 차단</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">테스트 구조</span><span class="leader"></span><span class="desc">Testcontainers 기반 PostgreSQL 통합 테스트, JaCoCo 커버리지</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">05</span> 트러블슈팅 및 개선 경험</div>
+
+            <div class="diff">
+              <div class="diff-cmd"><span class="sym">$</span> git show <span class="case">case-1:duplicate-url</span></div>
+              <div class="diff-body">
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>같은 상품 URL을 다시 저장하면 위시리스트에 중복 항목이 계속 쌓임</span></div>
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>이미 숙려 중인 상품인지 사용자가 확인할 방법이 없었음</span></div>
+                <div class="diff-row cause"><span class="tag"># cause</span><span>URL 유일성 제약이 없어 정책이 DB 레벨 제약으로 반영되지 않았음</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>(user, product_url) 조합에 UNIQUE 제약 추가</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>중복 저장 시 신규 생성 대신 기존 위시리스트 항목을 반환하도록 API 재설계, "이미 숙려 중인 상품입니다" 안내</span></div>
+              </div>
+            </div>
+
+            <div class="diff">
+              <div class="diff-cmd"><span class="sym">$</span> git show <span class="case">case-2:decision-history</span></div>
+              <div class="diff-body">
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>PurchaseDecision을 위시리스트 항목당 컬럼 하나(GO/STOP)로만 저장</span></div>
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>결정을 번복하면 "최종 상태"만 남고 이전 판단의 흐름이 사라짐</span></div>
+                <div class="diff-row cause"><span class="tag"># cause</span><span>최종 상태만 저장하는 설계가 추후 소비 패턴 분석·회고 기능이 필요로 하는 이력 데이터와 구조적으로 충돌</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>결정을 append-only 이력 테이블로 분리, 결정 시점마다 새 행 적재</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>위시리스트는 최신 상태만 참조하도록 재구성</span></div>
+              </div>
+            </div>
+
+            <div class="diff">
+              <div class="diff-cmd"><span class="sym">$</span> git show <span class="case">case-3:test-env-parity</span></div>
+              <div class="diff-body">
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>H2 인메모리 DB로 테스트 실행 — 제약조건·시퀀스 등 PostgreSQL 고유 동작과 차이 존재</span></div>
+                <div class="diff-row cause"><span class="tag"># cause</span><span>"테스트는 통과했지만 배포 환경에서만 깨지는" 상황을 우려</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>Testcontainers로 실제 PostgreSQL 컨테이너를 띄워 서비스·통합 테스트 구성</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>JaCoCo로 커버리지 리포트를 확인할 수 있는 구조 마련</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">06</span> 배운 점 및 회고</div>
+            <p class="quote-line">앱 백엔드는 화면에 필요한 API를 만드는 일이 아니라, 정책을 데이터 구조로 옮기는 일이라는 걸 배웠습니다.</p>
+            <p class="prose" style="margin-top:12px;">알림을 사용자 단위로 볼지 기기 단위로 볼지 같은 질문은 코드보다 먼저 기획과 함께 정리해야 했습니다.</p>
+            <p class="prose">이후로는 기능 구현 전에 도메인 문서와 마이그레이션 기준을 먼저 세우고, 그다음 코드로 옮기는 순서가 습관이 됐습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 02 YOUTHLETTER -->
+      <article class="pwin" data-target="youthletter">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/02-youthletter.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> ssh backend@youthletter — <span style="color:var(--cyan)">졸업작품 · 백엔드 총괄</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 유스레터 — 청년 금융 AI 플랫폼</h2>
+          <p class="doc-sub">AI 연동이 늦어져도 팀의 개발 속도는 멈추지 않도록 설계한 백엔드 구조.</p>
+          <div class="badges">
+            <span class="badge done">● 백엔드 총괄</span>
+            <span class="tagline">Spring Boot 3.4</span><span class="tagline">PostgreSQL</span><span class="tagline">pgvector</span>
+            <span class="tagline">OAuth2</span><span class="tagline">Docker Compose</span><span class="tagline">GitHub Actions</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요 및 기획 의도</div>
+            <p class="lede">추천 엔진 자체보다, 추천 엔진이 늦어도 무너지지 않는 백엔드 구조를 목표로 삼았습니다.</p>
+            <p class="prose">유스레터는 청년의 금융 정보 접근성을 높이기 위해 뉴스·정책·금융 콘텐츠를 벡터 유사도 기반으로 추천하는 AI 웹 플랫폼입니다.</p>
+            <p class="prose">팀 내 백엔드 총괄로서 전체 서버 구조 설계와 개발 흐름 조율을 맡았습니다.</p>
+            <p class="prose">개발 중 AI 서비스 연동이 예상보다 늦어지며 팀 전체 일정이 밀릴 위기가 있었고, <br>이를 계기로 "AI 기능은 백엔드가 실패·지연 상황까지 미리 설계해야 한다"는 관점을 갖게 됐습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술 스택 및 선택 이유</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">backend</span><span class="colon">:</span> <span class="v">Spring Boot 3.4, JPA, Spring Security, OAuth2</span> <span class="cm"># 팀 표준 스택 — 프론트와 병렬 개발 속도를 맞추기 위해 러닝커브 낮은 조합 선택</span></div>
+              <div class="kv"><span class="k">db_ai</span><span class="colon">:</span> <span class="v">PostgreSQL + pgvector, Flyway</span> <span class="cm"># 별도 벡터DB 없이 기존 RDB에 확장을 얹어 운영 인프라를 단일화</span></div>
+              <div class="kv"><span class="k">infra</span><span class="colon">:</span> <span class="v">Docker Compose, GitHub Actions</span> <span class="cm"># 팀원 간 로컬 환경 차이 제거, PR마다 동일 환경에서 빌드/테스트</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 시스템 아키텍처 · 개념 ERD</div>
+            <pre class="ascii"><span class="ent">User</span> ──<span class="rel">1:N</span>──▶ <span class="ent">RecommendationLog</span>           <span class="cm"># 추천 요청/응답 기록</span>
+
+<span class="ent">Content</span> ──<span class="rel">1:1</span>──▶ <span class="ent">Embedding</span>(pgvector) ──<span class="rel">N:M</span>──▶ <span class="ent">Recommendation</span></pre>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 본인이 담당한 핵심 기능</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">백엔드 총괄</span><span class="leader"></span><span class="desc">전체 서버 구조 설계 및 개발 흐름 조율</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">인증/인가</span><span class="leader"></span><span class="desc">OAuth2 기반 소셜 로그인 구조 설계</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">추천 구조</span><span class="leader"></span><span class="desc">PostgreSQL pgvector 기반 벡터 유사도 검색 구조 설계</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">개발 환경</span><span class="leader"></span><span class="desc">Docker Compose + GitHub Actions 기반 개발/배포 구조</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">협업 조율</span><span class="leader"></span><span class="desc">AI 지연 상황에서 stub 모드 도입으로 병렬 개발 조율</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">05</span> 트러블슈팅 및 개선 경험</div>
+            <div class="diff">
+              <div class="diff-cmd"><span class="sym">$</span> git show <span class="case">case:ai-stub-mode</span></div>
+              <div class="diff-body">
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>프론트는 추천 결과의 응답 형식이 필요, 백엔드는 실제 AI 응답 없이는 API 흐름 검증 불가</span></div>
+                <div class="diff-row cause"><span class="tag"># cause</span><span>AI 기능의 완성을 전제로 API 계약을 설계해, AI 지연이 곧바로 팀 전체 일정 지연으로 이어지는 구조</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>응답 스키마를 먼저 확정하고, 정해진 형식의 응답을 내려주는 stub 모드를 백엔드에 구축</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>이후 실제 AI 연동으로 무중단 교체</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">06</span> 배운 점 및 회고</div>
+            <p class="quote-line">AI 기능은 모델 성능만으로 완성되지 않습니다.</p>
+            <p class="quote-line">요청 형식과 응답 구조, 실패했을 때의 대체 처리까지 백엔드가 미리 정해놔야 서비스가 무너지지 않습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 ROBOT -->
+      <article class="pwin" data-target="robot">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/03-robot-system.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> ssh intern@taesung-env — <span style="color:var(--cyan)">현장실습 2개월 · 태성환경연구소</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 로봇 경로 조회 및 제어 웹 시스템</h2>
+          <p class="doc-sub">저장된 경로, 실시간 주행, AI 분석 결과 — 같은 화면, 다른 갱신 속도를 가진 세 데이터.</p>
+          <div class="badges">
+            <span class="badge done">● 현장실습 완료</span>
+            <span class="tagline">Java/Spring Boot</span><span class="tagline">MySQL/JPA</span><span class="tagline">WebSocket</span>
+            <span class="tagline">Leaflet.js</span><span class="tagline">Linux/Nginx</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요 및 기획 의도</div>
+            <p class="lede">로봇의 주행 경로를 저장·재현하고, 센서 데이터를 분석해 지도 위에 시각화하는 시스템.</p>
+            <p class="prose">로봇이 수집한 주행 데이터를 데이터베이스에 저장하고, 사용자가 웹 지도에서 경로를 지정하면 해당 좌표를 저장해 다시 불러올 수 있도록 구현했습니다.</p>
+            <p class="prose">여기에 12개 센서 데이터 기반 22종 화학물질 농도 추정 결과를 시각화하고, 실시간 주행 제어 기능까지 하나의 화면에 결합하는 것이 과제였습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술 스택 및 선택 이유</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">backend</span><span class="colon">:</span> <span class="v">Java, Spring Boot, RESTful API</span> <span class="cm"># 상태가 자주 바뀌지 않는 저장 데이터 조회는 REST로 분리해 응답 예측성 확보</span></div>
+              <div class="kv"><span class="k">realtime</span><span class="colon">:</span> <span class="v">WebSocket</span> <span class="cm"># 실시간 주행 상태는 폴링 대신 양방향 연결로 지연 최소화</span></div>
+              <div class="kv"><span class="k">db</span><span class="colon">:</span> <span class="v">MySQL, JPA</span> <span class="cm"># 경로–좌표처럼 관계가 명확한 구조에 적합한 RDB + ORM</span></div>
+              <div class="kv"><span class="k">frontend</span><span class="colon">:</span> <span class="v">Leaflet.js, jQuery</span> <span class="cm"># 가벼운 오픈소스 지도 라이브러리로 좌표·경로·확산영역 시각화</span></div>
+              <div class="kv"><span class="k">ai_data</span><span class="colon">:</span> <span class="v">Python, Scikit-learn, TensorFlow</span> <span class="cm"># 12개 센서 → 화학물질 농도 추정 분석 파이프라인과 연동</span></div>
+              <div class="kv"><span class="k">deploy</span><span class="colon">:</span> <span class="v">Linux Ubuntu, Nginx</span> <span class="cm"># 서버 구성부터 배포까지 직접 수행, 로컬-운영 환경 차이를 경험</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 시스템 아키텍처 · 개념 ERD</div>
+            <pre class="ascii"><span class="ent">Route</span>
+├─ <span class="ent">Coordinate</span>                              <span class="cm"># 지도 클릭 좌표</span>
+├─ <span class="ent">SensorReading</span> ──<span class="rel">1:1</span>──▶ <span class="ent">ConcentrationEstimate</span>   <span class="cm"># 12개 센서 → 22종 화학물질 추정</span>
+└─ <span class="ent">DriveSession</span>                            <span class="cm"># 실시간 주행 로그 (WebSocket)</span></pre>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 본인이 담당한 핵심 기능</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">경로 관리</span><span class="leader"></span><span class="desc">지도 클릭 기반 좌표 저장, 코스명 기반 경로 저장·재조회</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">로봇 제어</span><span class="leader"></span><span class="desc">전체 주행 · 순차 주행 · 실시간 주행 모드 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">센서 분석 연동</span><span class="leader"></span><span class="desc">12개 센서 → 22종 화학물질 농도 추정 결과 연동</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">GIS 시각화</span><span class="leader"></span><span class="desc">경로·센서 위치·풍향풍속 반영 확산 영역 시각화</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">API 설계</span><span class="leader"></span><span class="desc">RESTful API 설계 및 API 명세서 작성</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">서버 배포</span><span class="leader"></span><span class="desc">Ubuntu + Nginx 환경에서 웹 시스템 배포</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">05</span> 트러블슈팅 및 개선 경험</div>
+            <div class="diff">
+              <div class="diff-cmd"><span class="sym">$</span> git show <span class="case">case:realtime-vs-stored</span></div>
+              <div class="diff-body">
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>저장된 경로, 실시간 주행 상태, 센서 분석 결과를 하나의 처리 흐름으로 묶어 처리</span></div>
+                <div class="diff-row del"><span class="tag">- BEFORE</span><span>데이터가 들어오는 시점이 어긋나 지도 화면 표시가 꼬임</span></div>
+                <div class="diff-row cause"><span class="tag"># cause</span><span>저장 데이터(1회성 조회)와 실시간 데이터(지속 갱신)는 갱신 주기·신뢰 시점이 다른데 같은 파이프라인에서 처리</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>저장된 경로 조회는 REST API로, 실시간 주행 상태는 WebSocket으로 분리</span></div>
+                <div class="diff-row add"><span class="tag">+ AFTER</span><span>화면에서도 경로 · 현재 상태 · 분석 결과의 렌더링 책임을 나눠 독립적으로 갱신</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">06</span> 배운 점 및 회고</div>
+            <p class="quote-line">한 화면에 여러 소스의 데이터를 합칠 때는, 통신 방식과 갱신 주기를 데이터 특성에 맞게 분리해야 합니다.</p>
+            <p class="prose" style="margin-top:12px;">이 경험은 이후 프로젝트에도 이어져, 화면에 값이 이상하게 표시될 때 프론트나 API만 보는 것이 아니라 데이터가 생성되는 지점과 전달 과정까지 함께 확인하는 습관으로 남았습니다.</p>
+            <p class="prose" style="margin-top:12px;">현장에 실제로 투입되어 필요한 데이터가 무엇인지 파악하고, 수많은 데이터 속에서 정보를 만들어나가는 과정을 통해 백엔드가 실제로 어떻게 동작하는지를 공부하였습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 04 GAMBA (MQTT/SLM) -->
+      <article class="pwin" data-target="gamba">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/gamba-mqtt-slm.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> ssh intern@gamba-labs — <span style="color:var(--cyan)">현장실습 · 진행중 · 감바랩스</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> MQTT 통신 및 SLM 기반 AI 연동 실습</h2>
+          <p class="doc-sub">장비 데이터가 통신을 거쳐 서버·AI 기능으로 연결되는 구조를 실습 중입니다.</p>
+          <div class="badges">
+            <span class="badge active">● 진행중 · 현장실습 · 감바랩스</span>
+            <span class="tagline">Raspberry Pi</span><span class="tagline">ESP32</span><span class="tagline">MQTT</span><span class="tagline">SLM</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="lede">AI 기능은 큰 서버나 외부 API에서만 동작하는 것이 아니라는 전제로 실습을 시작했습니다.</p>
+            <p class="prose">감바랩스 현장실습에서는 IoT 장비와 서버, AI 기능이 연결되는 구조를 실습하고 있습니다.</p>
+            <p class="prose">Raspberry Pi와 ESP32를 활용해 장비 간 데이터 흐름을 확인하고, MQTT 기반 통신 구조를 다루며 센서·장치 데이터가 실시간으로 전달되는 과정을 학습하고 있습니다.</p>
+            <p class="prose">또한 SLM을 함께 공부하며, AI 기능이 단순히 외부 API 호출에만 머무르지 않고 제한된 환경이나 서비스 내부 흐름 안에서도 활용될 수 있는 방식을 탐색하고 있습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">hardware</span><span class="colon">:</span> <span class="v">Raspberry Pi, ESP32</span></div>
+              <div class="kv"><span class="k">communication</span><span class="colon">:</span> <span class="v">MQTT</span> <span class="cm"># 장비 간 데이터 송수신 구조 학습</span></div>
+              <div class="kv"><span class="k">ai_model</span><span class="colon">:</span> <span class="v">SLM 학습, 경량 AI 모델 활용 구조 이해</span></div>
+              <div class="kv"><span class="k">backend_link</span><span class="colon">:</span> <span class="v">장비 데이터 흐름, 서버 연동 구조 학습</span></div>
+              <div class="kv"><span class="k">development</span><span class="colon">:</span> <span class="v">Linux 환경, 실습 장비 세팅</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 담당 역할</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">MQTT 통신 실습</span><span class="leader"></span><span class="desc">Raspberry Pi, ESP32 기반 장비 간 데이터 송수신 구조 학습</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">장비 데이터 흐름 이해</span><span class="leader"></span><span class="desc">센서·장치 데이터가 통신을 거쳐 서버 또는 서비스로 전달되는 과정 확인</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">SLM 학습</span><span class="leader"></span><span class="desc">제한된 환경에서 활용 가능한 소형 언어 모델 구조와 적용 가능성 학습</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">AI 연동 구조 탐색</span><span class="leader"></span><span class="desc">AI 기능이 서비스 흐름 안에서 어떻게 호출·활용될 수 있는지 학습</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">실습 환경 구성</span><span class="leader"></span><span class="desc">장비 세팅, 통신 테스트, 실행 환경 확인</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 주요 성과</div>
+            <p class="prose">Raspberry Pi와 ESP32 기반 IoT 장비 실습 경험을 쌓았습니다.</p>
+            <p class="prose">MQTT 기반 실시간 데이터 송수신 구조를 학습했습니다.</p>
+            <p class="prose">장비 데이터가 서버와 AI 기능으로 연결되는 흐름을 이해했습니다.</p>
+            <p class="prose">SLM 기반 AI 기능 활용 가능성을 탐색했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">05</span> 진행하며 보고 있는 지점</div>
+            <p class="quote-line">제한된 환경에서는 모델 크기, 응답 속도, 입력 데이터 형식 같은 조건을 함께 고려해야 했습니다.</p>
+            <p class="prose" style="margin-top:12px;">장비에서 발생한 데이터가 어떤 형식으로 전달되고, 서버나 AI 기능과 연결되기 위해 어떤 구조가 필요한지 확인하는 중입니다.</p>
+            <p class="prose">이 부분이 나중에 AI 기능을 백엔드 서비스 안에 넣을 때 중요한 판단 기준이 될 것 같습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 05 FOODTECH -->
+      <article class="pwin" data-target="foodtech">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/food-tech.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> ssh dev@foodtech — <span style="color:var(--cyan)">국가과제 · 기획부터 배포까지 모두 수행</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 식품테크 웹 서비스</h2>
+          <p class="doc-sub">조건에 따라 달라지는 동적 가격 산정 구조를 설계하고, 기획부터 배포까지 전 과정을 수행했습니다.</p>
+          <div class="badges">
+            <span class="badge done">● 배포 완료 · 국가과제</span>
+            <span class="tagline">Spring Boot</span><span class="tagline">JPA</span><span class="tagline">Supabase</span><span class="tagline">Thymeleaf</span><span class="tagline">Railway</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="lede">축산 식품 정보를 제공하는 웹 서비스를 기획부터 배포까지 직접 진행했습니다.</p>
+            <p class="prose">서비스 목적과 사용자 흐름에 맞춰 웹 페이지를 기획하고, 데이터베이스와 서버를 연동하여 실제 접근 가능한 웹 서비스 형태로 구현했습니다.</p>
+            <p class="prose">또한 비즈니스 조건에 따라 가격이 달라지는 동적 가격 산정 구조를 설계하고, 이를 백엔드 로직으로 구현했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">backend</span><span class="colon">:</span> <span class="v">Spring Boot, JPA</span></div>
+              <div class="kv"><span class="k">database</span><span class="colon">:</span> <span class="v">Supabase, 관계형 DB</span></div>
+              <div class="kv"><span class="k">view</span><span class="colon">:</span> <span class="v">Thymeleaf</span></div>
+              <div class="kv"><span class="k">infra</span><span class="colon">:</span> <span class="v">Railway</span> <span class="cm"># 실제 접근 가능한 웹 서비스로 배포</span></div>
+              <div class="kv"><span class="k">planning</span><span class="colon">:</span> <span class="v">웹 페이지 기획, 서비스 구조 설계</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 담당 역할</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">웹 서비스 기획</span><span class="leader"></span><span class="desc">서비스 목적과 사용자 흐름에 맞는 화면 및 기능 구조 설계</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">백엔드 개발</span><span class="leader"></span><span class="desc">Spring Boot 기반 핵심 기능 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">비즈니스 로직 설계</span><span class="leader"></span><span class="desc">조건 기반 동적 가격 산정 로직 설계 및 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">DB 연동</span><span class="leader"></span><span class="desc">JPA 및 Supabase 기반 데이터 처리 구조 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">서버 구성 및 배포</span><span class="leader"></span><span class="desc">Railway를 활용해 실제 접근 가능한 웹 서비스로 배포</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">문서화</span><span class="leader"></span><span class="desc">기능 요구사항, 사용자 흐름, 데이터 구조, 배포 과정 정리</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 작업하면서 신경 쓴 부분</div>
+            <p class="quote-line">코드로 구현하는 것뿐 아니라 소통의 중요성을 인지하게 되었습니다.</p>
+            <p class="prose" style="margin-top:12px;">기능을 만들 때마다 왜 이 기능이 필요한지, 어떤 사용자 흐름에서 쓰이는지, 어떤 데이터 구조로 저장되는지를 정리해야 했습니다.</p>
+            <p class="prose">국가과제 특성상 구현 과정과 결과를 문서로 남기는 일도 중요했고, 클라이언트와 계속 소통하며 합의점을 만들어갔습니다.</p>
+            <p class="prose">동적 가격 산정 로직을 구현할 때도 단순 계산식만 만든 것이 아니라, 조건이 바뀌었을 때 어떤 값이 달라져야 하는지 먼저 정리한 뒤 Spring Boot와 JPA로 옮겼습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 06 IOT LAB -->
+      <article class="pwin" data-target="iotlab">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/iot-lab.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> cat iot-lab.md — <span style="color:var(--cyan)">2024.04 – 2026.06 · 부산대학교 IoT 사물인터넷 실험실 · 2년</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> IoT 사물인터넷 실험실 활동</h2>
+          <p class="doc-sub">임베디드 시스템, 센서 데이터 처리, 무선 통신 프로토콜을 2년간 학습하고 실습했습니다.</p>
+          <div class="badges">
+            <span class="badge study">● 2024.04 – 2026.06 · 2년</span>
+            <span class="tagline">Arduino</span><span class="tagline">ATmega128</span><span class="tagline">ESP32</span><span class="tagline">Raspberry Pi</span><span class="tagline">MQTT</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="prose">부산대학교 IoT 사물인터넷 실험실에서 2년간 활동하며 임베디드 시스템, 센서 데이터 처리, 무선 통신 프로토콜을 학습하고 실습했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">hardware</span><span class="colon">:</span> <span class="v">Arduino, ATmega128, ESP32, Raspberry Pi</span></div>
+              <div class="kv"><span class="k">communication</span><span class="colon">:</span> <span class="v">MQTT</span></div>
+              <div class="kv"><span class="k">data</span><span class="colon">:</span> <span class="v">센서 데이터 처리</span></div>
+              <div class="kv"><span class="k">app_service</span><span class="colon">:</span> <span class="v">React Native, Firebase 연동 경험</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 주요 경험</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">하드웨어 제어</span><span class="leader"></span><span class="desc">Arduino, ATmega128, ESP32 기반 하드웨어 제어</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">통신 연동</span><span class="leader"></span><span class="desc">MQTT 브로커 연동 및 실시간 데이터 송수신</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">센서 데이터</span><span class="leader"></span><span class="desc">센서 데이터 수집 및 처리</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">서비스 연동</span><span class="leader"></span><span class="desc">임베디드 장치와 웹/앱 서비스 연동 구조 이해</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">현장실습 연계</span><span class="leader"></span><span class="desc">Raspberry Pi, ESP32 기반 IoT/AI 연동 구조 및 SLM 학습으로 확장</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 기억에 남는 지점</div>
+            <p class="quote-line">코드만으로 끝나지 않는 문제를 자주 만났다.</p>
+            <p class="prose" style="margin-top:12px;">센서 값이 예상과 다르게 들어오거나, 장치 연결이 불안정하거나, <br>MQTT 통신이 끊기는 상황이 생기면 먼저 하드웨어 상태와 통신 흐름을 함께 확인해야 했습니다.</p>
+            <p class="prose">이 경험 덕분에 이후 백엔드 프로젝트에서도 데이터가 어디서 시작되는지부터 보게 됐고, 화면에 값이 이상하게 표시될 때도 데이터 생성 지점과 전송 과정까지 같이 확인하는 습관이 생겼습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 07 LABIT -->
+      <article class="pwin" data-target="labit">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/labit-aiot.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> cat labit-aiot.md — <span style="color:var(--cyan)">창업 · K-12 AIoT 교육 솔루션</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> LABIT — K-12 AIoT 교육 플랫폼</h2>
+          <p class="doc-sub">스마트홈과 진로 교육을 연계한 실시간 교육 플랫폼, 기술과 사업화를 함께 준비했습니다.</p>
+          <div class="badges">
+            <span class="badge study">● 창업 · 교육 솔루션</span>
+            <span class="tagline">ESP32</span><span class="tagline">MQTT</span><span class="tagline">React Native</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="lede">"누가 이걸 쓰는가"를 기술 구현만큼 고민한 프로젝트였습니다.</p>
+            <p class="prose">LABIT은 K-12 학생을 대상으로 스마트홈과 진로 교육을 연계한 AIoT 교육 솔루션입니다.</p>
+            <p class="prose">ESP32와 MQTT, React Native를 활용해 실시간으로 데이터를 주고받는 교육용 플랫폼을 기획하고 개발했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">hardware</span><span class="colon">:</span> <span class="v">ESP32</span></div>
+              <div class="kv"><span class="k">communication</span><span class="colon">:</span> <span class="v">MQTT</span></div>
+              <div class="kv"><span class="k">mobile</span><span class="colon">:</span> <span class="v">React Native</span></div>
+              <div class="kv"><span class="k">business</span><span class="colon">:</span> <span class="v">B2G, B2B, B2C 시장 진입 전략</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 담당 역할</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">AIoT 서비스 기획</span><span class="leader"></span><span class="desc">스마트홈 기반 교육 커리큘럼 및 서비스 구조 기획</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">개발 참여</span><span class="leader"></span><span class="desc">ESP32, MQTT, React Native 기반 플랫폼 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">사업화 전략</span><span class="leader"></span><span class="desc">B2G → B2B → B2C 시장 진입 전략 수립</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">발표</span><span class="leader"></span><span class="desc">IR 발표 및 창업 경진대회 참여</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 기억에 남는 지점</div>
+            <p class="quote-line">기능이 복잡하거나 설명이 어려우면, 좋은 기술이어도 실제 수업에서는 쓰기 어렵다는 문제를 인지하고 해결했습니다.</p>
+            <p class="prose" style="margin-top:12px;">K-12 학생을 대상으로 한 교육 솔루션이었기 때문에, 스마트홈 기능을 단순한 장치 제어로 보여주기보다 진로 교육과 연결될 수 있는 흐름으로 구성하려 했습니다.</p>
+            <p class="prose">ESP32와 MQTT, React Native를 활용한 구현뿐 아니라 B2G, B2B, B2C 시장 진입 전략과 IR 발표까지 함께 준비하면서 기술과 사용자, 사업 방향을 같이 보는 연습을 했습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 08 MIRYANG BUS -->
+      <article class="pwin" data-target="miryangbus">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/miryang-bus.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> cat miryang-bus.md — <span style="color:var(--cyan)">개인 프로젝트 · 배포·운영중</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 밀양 캠퍼스 시내버스 웹앱</h2>
+          <p class="doc-sub">직접 겪은 통학 불편을 JavaScript SPA로 해결해 배포·운영 중입니다.</p>
+          <div class="badges">
+            <span class="badge done">● 배포·운영중</span>
+            <span class="tagline">JavaScript SPA</span><span class="tagline">Vercel</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="lede">배차 정보가 흩어져 있어 확인이 번거로웠던 문제를, 직접 겪었기에 직접 풀었습니다.</p>
+            <p class="prose">밀양 캠퍼스에서 시내버스를 이용하며 느낀 불편함을 해결하기 위해 직접 기획, 개발, 배포한 웹앱입니다.</p>
+            <p class="prose">배차 정보가 흩어져 있어 확인이 번거롭고, 사용자가 필요한 정보를 빠르게 찾기 어려웠습니다.</p>
+            <p class="prose">이를 해결하기 위해 JavaScript 기반 SPA 방식으로 웹앱을 구현하고 Vercel에 배포했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 담당 역할</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">문제 정의</span><span class="leader"></span><span class="desc">실제 통학 과정에서 겪은 버스 정보 확인 불편함 분석</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">서비스 기획</span><span class="leader"></span><span class="desc">사용자가 빠르게 버스 정보를 확인할 수 있는 화면 흐름 설계</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">개발</span><span class="leader"></span><span class="desc">JavaScript 기반 SPA 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">배포</span><span class="leader"></span><span class="desc">Vercel을 통한 웹앱 배포</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">운영</span><span class="leader"></span><span class="desc">실제 사용자 피드백 기반 개선</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 기억에 남는 지점</div>
+            <p class="quote-line">개발자가 보는 화면과 사용자가 보는 화면은 다릅니다.</p>
+            <p class="prose" style="margin-top:12px;">처음에는 제가 쓰려고 만든 서비스였지만, 배포 후 실제 사용자가 생기면서 기준이 달라졌습니다. 여러 피드백을 받고 고치며 성장했습니다.</p>
+            <p class="prose">기능을 많이 넣는 것보다 자주 확인하는 정보를 바로 찾게 하는 것이 더 중요했습니다.</p>
+          </div>
+          <div class="mini-stack num" style="color:var(--green)">metric: 2026.04~ 월평균 활성 사용자 189명</div>
+          <a class="mini-link" href="https://miryang-daeunmummu.vercel.app/" target="_blank" rel="noopener">→ 서비스 바로가기</a>
+        </div>
+      </article>
+
+      <!-- 09 INFANT SAFETY -->
+      <article class="pwin" data-target="busaccess">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/bus-accessibility.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> cat bus-accessibility.md — <span style="color:var(--cyan)">IoT-X 캡스톤 디자인 · 장려상 · 진행완료</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 시각장애인을 위한 버스 이용 지원 앱</h2>
+          <p class="doc-sub">완전 실명이 아닌 저시력 시각장애인이 클릭 한 번마다 음성 안내를 들으며 버스를 이용할 수 있도록 돕는 앱입니다.</p>
+          <div class="badges">
+            <span class="badge study">● IoT-X 캡스톤 디자인 · 장려상</span>
+            <span class="tagline">Android Studio</span><span class="tagline">Java / Kotlin</span><span class="tagline">음성 안내(TTS)</span><span class="tagline">비콘(BLE) 연동 예정</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="lede">완전히 보이지 않는 것과 조금 보이는 것은, 앱이 필요한 방식 자체가 다르다는 걸 현장에서 배웠습니다.</p>
+            <p class="prose">시각장애인 중에서도 완전 실명보다는 저시력, 즉 일정 수준 이상 보이지 않는 사용자를 대상으로 한 버스 이용 지원 앱입니다.</p>
+            <p class="prose">화면의 모든 클릭에 음성 안내가 따라오도록 만들어, 화면을 정확히 보지 않아도 지금 어떤 화면이고 무엇을 눌렀는지 알 수 있게 하는 것이 핵심입니다.</p>
+            <p class="prose">여러 시각장애인 복지관을 직접 방문해 실제 사용자들이 버스를 이용할 때 겪는 문제를 확인하고, 그 문제를 기준으로 기능을 정했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 사용 기술</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">platform</span><span class="colon">:</span> <span class="v">Android Studio, Java / Kotlin</span></div>
+              <div class="kv"><span class="k">accessibility</span><span class="colon">:</span> <span class="v">전 화면 클릭 음성 안내(TTS)</span> <span class="cm"># 저시력 사용자가 화면을 보지 않아도 조작 가능하도록</span></div>
+              <div class="kv"><span class="k">field_research</span><span class="colon">:</span> <span class="v">시각장애인 복지관 방문 조사</span> <span class="cm"># 실사용자 피드백 기반 기능 정의</span></div>
+              <div class="kv"><span class="k">next</span><span class="colon">:</span> <span class="v">비콘(BLE) 연동</span> <span class="cm"># 실제 버스·정류장 위치와 앱을 연결하는 단계 준비 중</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 담당 역할</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">현장 조사</span><span class="leader"></span><span class="desc">시각장애인 복지관 방문, 실제 버스 이용 불편 사항 수집</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">앱 개발</span><span class="leader"></span><span class="desc">Android Studio 기반 앱 구현</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">접근성 설계</span><span class="leader"></span><span class="desc">모든 클릭에 음성 안내가 붙는 조작 흐름 설계·구현</span></div>
+              <div class="task"><span class="ok" style="color:var(--orange)">○</span><span class="name">비콘 연동</span><span class="leader"></span><span class="desc">비콘 설치를 통한 실제 버스 위치 연동 준비 중</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 주요 성과</div>
+            <p class="prose">IoT-X 캡스톤 디자인 경진대회에서 장려상을 받았습니다.</p>
+            <p class="prose">복지관 현장 방문을 통해 실제 저시력 사용자의 피드백을 기능에 반영했습니다.</p>
+            <p class="prose">화면 전체에 음성 안내를 붙이는 접근성 중심 UI/UX를 직접 설계하고 구현했습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 10 DANDI -->
+      <article class="pwin" data-target="dandi">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/projects/others/dandi-healthcare.md — vim</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> cat dandi-healthcare.md — <span style="color:var(--cyan)">서비스 기획 · 헬스케어</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 단디 — 당뇨 환자 헬스케어 서비스</h2>
+          <p class="doc-sub">기술 구현보다 문제를 정의하고 사용자 관점에서 서비스 구조를 잡아본 프로젝트입니다.</p>
+          <div class="badges">
+            <span class="badge plan">● 서비스 기획 중심</span>
+            <span class="tagline">서비스 기획</span><span class="tagline">헬스케어</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 개요</div>
+            <p class="lede">건강 데이터를 단순히 기록하는 데서 끝내지 않고, 이해와 행동으로 이어지게 하고 싶었습니다.</p>
+            <p class="prose">단디는 당뇨 환자들이 혈당, 식단, 생활 습관을 꾸준히 관리하는 과정에서 겪는 불편함에 주목한 헬스케어 서비스입니다.</p>
+            <p class="prose">건강 데이터를 단순히 기록하는 데서 끝내지 않고, 사용자가 이해하고 행동으로 이어갈 수 있는 형태로 제공하는 방향을 고민했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 담당 역할</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">문제 정의</span><span class="leader"></span><span class="desc">당뇨 환자의 일상적 건강 관리 부담 분석</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">서비스 기획</span><span class="leader"></span><span class="desc">혈당, 식단, 생활 습관 관리 흐름을 고려한 서비스 방향 설계</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">사용자 관점 정리</span><span class="leader"></span><span class="desc">건강 데이터를 사용자가 이해할 수 있는 정보로 제공하는 방식 고민</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 기획하며 신경 쓴 부분</div>
+            <p class="quote-line">기술 구현보다 문제를 정의하고 사용자 관점에서 서비스 구조를 잡아보는 경험에 가까웠습니다.</p>
+            <p class="prose" style="margin-top:12px;">당뇨 환자가 매일 반복해야 하는 관리 과정을 어떻게 덜 부담스럽게 만들 수 있을지 고민했습니다.</p>
+            <p class="prose">혈당, 식단, 생활 습관은 모두 중요한 정보지만, 사용자가 매번 기록하고 해석하기에는 피로도가 높다고 봤습니다.</p>
+            <p class="prose">그래서 단순히 데이터를 많이 보여주는 방향보다, 사용자가 자신의 상태를 이해하고 다음 행동을 정할 수 있는 흐름을 생각했습니다.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- 11 SENDY -->
+      <article class="pwin" data-target="sendy">
+        <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~/apply/sendy-backend-engineer.md — new</div></div>
+        <div class="win-body">
+          <p class="prompt-line"><span class="sym">$</span> touch sendy-backend-engineer.md — <span style="color:var(--cyan)">2026.09 – 2026.12 · 현장실습 지원 · (주)센디 백엔드 엔지니어(제품팀)</span></p>
+          <h2 class="doc-h1"><span class="h-tag">#</span> 센디에서 내가 할 수 있는 일</h2>
+          <p class="doc-sub">AI/SaaS 화물 운송 플랫폼, 제품팀 백엔드 엔지니어로서 기여하고 싶은 지점.</p>
+          <div class="badges">
+            <span class="badge active">● 지원 · 백엔드 엔지니어(제품팀)</span>
+            <span class="tagline">Java 21</span><span class="tagline">Spring Boot</span><span class="tagline">PostgreSQL / MySQL</span>
+            <span class="tagline">REST API</span><span class="tagline">AI 연동</span><span class="tagline">Docker</span>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">01</span> 지원 동기</div>
+            <p class="lede">화면에 보이는 결과보다, 그 결과를 만들어내는 로직과 데이터 흐름을 설계할 때 더 몰입합니다.</p>
+            <p class="prose">Wigul, 유스레터, 로봇 경로 제어 시스템까지 여러 프로젝트에서 서버 구조 설계와 도메인 로직 구현을 반복해왔습니다.</p>
+            <p class="prose">동시에 로봇 시스템 프로젝트에서 센서 데이터를 지도 위에 시각화했던 경험처럼, <br>백엔드가 처리한 데이터를 사람이 읽을 수 있는 형태로 보여주는 작업에도 강점이 있습니다.</p>
+            <p class="prose">센디는 화물 운송이라는 실제 물류 데이터 위에서 에이전트가 동작하는 서비스라서, 지금까지 제가 해온 "정책을 데이터 구조로 옮기는" 백엔드 작업을 <br>실제 현장에서 시험해볼 수 있는 곳이라고 생각했습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">02</span> 보유 기술 스택</div>
+            <div class="kv-block">
+              <div class="kv"><span class="k">backend</span><span class="colon">:</span> <span class="v">Java 21, Spring Boot 3.x, Spring Security, JPA</span> <span class="cm"># Wigul·유스레터·로봇 시스템에서 반복 사용한 핵심 스택</span></div>
+              <div class="kv"><span class="k">database</span><span class="colon">:</span> <span class="v">PostgreSQL, MySQL, pgvector, Flyway</span> <span class="cm"># 관계형 스키마 설계부터 벡터 확장, 마이그레이션 이력 관리까지</span></div>
+              <div class="kv"><span class="k">ai_integration</span><span class="colon">:</span> <span class="v">pgvector 추천 구조, AI stub 모드 설계</span> <span class="cm"># AI 응답 지연·실패까지 고려한 API 계약 설계 경험</span></div>
+              <div class="kv"><span class="k">realtime_iot</span><span class="colon">:</span> <span class="v">WebSocket, MQTT, Arduino / ESP32 / Raspberry Pi</span> <span class="cm"># 로봇 제어, IoT 실험실, MQTT·SLM 실습에서 사용</span></div>
+              <div class="kv"><span class="k">deploy_test</span><span class="colon">:</span> <span class="v">Docker Compose, GitHub Actions, Linux/Nginx, Railway, Vercel</span> <span class="cm"># 배포 환경 구성과 CI 파이프라인을 직접 구축</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">03</span> 강조하고 싶은 프로젝트 경험</div>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">Wigul</span><span class="leader"></span><span class="desc">8개 도메인 API 단독 설계·구현, DB 제약조건으로 기획 정책을 강제</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">유스레터</span><span class="leader"></span><span class="desc">백엔드 총괄, pgvector 추천 구조, AI 지연 상황을 stub 모드로 흡수</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">로봇 경로 제어 시스템</span><span class="leader"></span><span class="desc">12개 센서 → 22종 화학물질 농도 추정 결과를 GIS로 시각화, WebSocket 실시간 제어</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">식품테크 · LABIT · 밀양 버스</span><span class="leader"></span><span class="desc">기획부터 배포까지 전 과정 수행, 실사용자 지표 확보</span></div>
+            </div>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">04</span> 4개월 동안 이렇게 일하겠습니다</div>
+            <p class="lede">2026년 9월부터 12월까지, 16주를 이 순서로 채우고 싶습니다.</p>
+            <div class="task-list">
+              <div class="task"><span class="ok">✔</span><span class="name">1개월차 · 9월</span><span class="leader"></span><span class="desc">센디의 서비스 구조와 에이전트 아키텍처, API·DB 컨벤션을 코드로 직접 읽으며 파악하고, 작은 이슈부터 맡아 팀 리듬에 맞춥니다</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">2개월차 · 10월</span><span class="leader"></span><span class="desc">화물 운송 도메인의 실제 기능 개발에 참여해, 에이전트가 처리한 결과를 API·DB에 반영하는 로직을 구현합니다</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">3개월차 · 11월</span><span class="leader"></span><span class="desc">에이전트 응답이 실패하거나 늦어지는 상황을 가정한 예외 처리·재시도 로직을 직접 설계해보고, 배포까지 참여합니다</span></div>
+              <div class="task"><span class="ok">✔</span><span class="name">4개월차 · 12월</span><span class="leader"></span><span class="desc">담당 기능을 문서화하고, 4개월간 발견한 개선점을 팀에 회고로 공유한 뒤 인수인계 자료를 정리합니다</span></div>
+            </div>
+            <p class="prose" style="margin-top:14px;">센디가 제시한 교육 목표인 플랫폼·SaaS 제품 개발 경험, 에이전트 기반 서비스의 개발부터 관리까지 전 과정 경험, <br>AI 기반 엔지니어링 방법론 경험을 이 순서로 하나씩 직접 몸으로 익히고 싶습니다.</p>
+          </div>
+
+          <div class="sec">
+            <div class="sec-h"><span class="no">05</span> 마무리</div>
+            <p class="quote-line">저는 화면보다 그 뒤에서 도는 로직을 구현하는 데 더 큰 행복을 느낍니다.</p>
+            <p class="prose" style="margin-top:12px;">4개월 동안 화물 운송이라는 실제 흐름 위에서 에이전트와 백엔드가 맞물리는 지점을 직접 만들어보고 싶습니다.</p>
+            <p class="prose">그리고 그 과정에서 만든 구조를, 로봇 시스템 프로젝트에서처럼 그림으로도 설명할 수 있는 사람이 되고 싶습니다.</p>
+          </div>
+        </div>
+      </article>
+
+  </section>
+
+  <!-- ============ CLOSING ============ -->
+  <section class="closing" id="contact">
+    <p class="closing-eyebrow">Contact</p>
+    <h2 class="closing-title">정다은 · Backend Engineer, 신입</h2>
+    <p class="closing-lede">에이전트가 외부 API를 호출했다 실패·지연될 때, 그 흐름을 서비스 안에서 흡수하는 백엔드를 만들고 싶습니다.</p>
+    <p class="closing-prose">로봇 제어 시스템, 유스레터, Wigul 프로젝트를 통해 Spring Boot 기반 API 설계, <br> DB 스키마 설계, 인증·인가, 실시간 통신, AI 서비스 연동, 테스트 환경 구성을 경험했습니다.</p>
+    <p class="closing-prose">완벽한 계획을 먼저 세우기보다, 작게라도 구현해보고 실제 피드백으로 다듬는 쪽을 선택합니다.</p>
+    <div class="closing-actions">
+      <a class="run-btn primary" href="mailto:ekdms8652@pusan.ac.kr"><span class="sym">$</span> ./contact.sh --send</a>
+      <a class="run-btn" href="https://github.com/Dongle-2026/Dongle-BE.git" target="_blank" rel="noopener"><span class="sym">$</span> open 유스레터 GitHub</a>
+      <a class="run-btn" href="https://github.com/ekdmssld/brainsensemvp.git" target="_blank" rel="noopener"><span class="sym">$</span> open LABIT GitHub</a>
+    </div>
+  </section>
+
+  <!-- ============ MODALS (skills / awards) ============ -->
+  <div class="modal-overlay" id="skills-modal">
+    <div class="modal-win">
+      <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">dongeun — skills.json — cat</div><button class="modal-close" aria-label="닫기">✕</button></div>
+      <div class="win-body">
+        <p class="prompt-line"><span class="sym">$</span> cat skills.json</p>
+        <div class="kv-block">
+          <div class="kv"><span class="k">"backend"</span><span class="colon">:</span> <span class="v">["Java", "Spring Boot", "JPA", "RESTful API", "Spring Security", "OAuth2"]</span></div>
+          <div class="kv"><span class="k">"database"</span><span class="colon">:</span> <span class="v">["PostgreSQL", "MySQL", "Supabase", "Flyway"]</span> <span class="cm"># 스키마 설계·마이그레이션 포함</span></div>
+          <div class="kv"><span class="k">"ai_data"</span><span class="colon">:</span> <span class="v">["Python", "pgvector", "SLM", "AI 서비스 연동 구조 설계"]</span></div>
+          <div class="kv"><span class="k">"realtime"</span><span class="colon">:</span> <span class="v">["WebSocket", "MQTT", "Firebase"]</span></div>
+          <div class="kv"><span class="k">"iot"</span><span class="colon">:</span> <span class="v">["Arduino", "ATmega128", "ESP32", "Raspberry Pi"]</span></div>
+          <div class="kv"><span class="k">"deploy_test"</span><span class="colon">:</span> <span class="v">["Linux", "Nginx", "Docker Compose", "GitHub Actions", "Testcontainers", "JaCoCo"]</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="awards-modal">
+    <div class="modal-win">
+      <div class="win-bar"><div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div><div class="win-path">~ — awards.log — tail -f</div><button class="modal-close" aria-label="닫기">✕</button></div>
+      <div class="win-body tight">
+        <p class="prompt-line"><span class="sym">$</span> cat awards.log</p>
+        <div class="log-line"><span class="yr num">[2025]</span><span class="ev">Dream-Beats 창업 경진대회</span><span class="leader"></span><span class="rs">총장상</span></div>
+        <div class="log-line"><span class="yr num">[2025]</span><span class="ev">부울경 ICT 경진대회</span><span class="leader"></span><span class="rs">장려상</span></div>
+        <div class="log-line"><span class="yr num">[2025]</span><span class="ev">서울대학교 지역 창업 솔버톤 대회</span><span class="leader"></span><span class="rs">특별상</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">동남권 LINC 3.0 창업노마드 캠프&아이디어 경진대회</span><span class="leader"></span><span class="rs">우수상</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">하나 소셜벤처 유니버시티 아이디어 경진대회</span><span class="leader"></span><span class="rs">본선</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">PNU Dream Beats 창업 경진대회</span><span class="leader"></span><span class="rs">4등</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">IoT-X 캡스톤 디자인 경진대회</span><span class="leader"></span><span class="rs">장려상</span></div>
+
+        <div class="modal-subhead"><span class="no">#</span> 창업 교육 활동 (수료)</div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">제2회 Do-Dream 창업 캠프</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">제22기 차세대 글로벌 창업무역스쿨 모국방문교육</span><span class="leader"></span><span class="rs" style="color:var(--comment)">발표 우수</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">제1회 Dream Challenge 창업 캠프</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">서울대학교 대학연대 창업 네트워크 캠프</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">부산권 LINC 3.0 창업공유대학 BOOST 창업 패키지</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">PNU 창업동아리 Challenger-Track 2차</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">PNU-BNUE 창업경영 시뮬레이션</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+        <div class="log-line"><span class="yr num">[2024]</span><span class="ev">부산 U-창업패키지</span><span class="leader"></span><span class="rs" style="color:var(--comment)">수료</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    var wins = Array.prototype.slice.call(document.querySelectorAll('.pwin'));
+
+    function activate(id) {
+      tabs.forEach(function (t) { t.classList.toggle('active', t.dataset.target === id); });
+      wins.forEach(function (w) { w.classList.toggle('active', w.dataset.target === id); });
+    }
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () { activate(t.dataset.target); });
+    });
+
+    wins.forEach(function (w) {
+      var bar = w.querySelector('.win-bar');
+      bar.addEventListener('click', function () { activate(w.dataset.target); });
+    });
+
+    var modalTriggers = Array.prototype.slice.call(document.querySelectorAll('[data-modal]'));
+    var modalOverlays = Array.prototype.slice.call(document.querySelectorAll('.modal-overlay'));
+
+    modalTriggers.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var modal = document.getElementById(btn.dataset.modal);
+        if (modal) modal.classList.add('open');
+      });
+    });
+
+    modalOverlays.forEach(function (overlay) {
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) overlay.classList.remove('open');
+      });
+      var closeBtn = overlay.querySelector('.modal-close');
+      if (closeBtn) closeBtn.addEventListener('click', function () { overlay.classList.remove('open'); });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') modalOverlays.forEach(function (o) { o.classList.remove('open'); });
+    });
+  })();
+</script>
